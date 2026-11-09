@@ -1,4 +1,4 @@
-const API_KEY = 'TU_API_KEY_AQUI';
+const API_KEY = 'MQDXK2JTF5TQ29AMW4PGDTLB6';
 
 let tempC = 0;
 let feelsLikeC = 0;
