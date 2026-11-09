@@ -1,56 +1,84 @@
 const API_KEY = 'TU_API_KEY_AQUI';
 
-let clima;
+let tempC = 0;
+let feelsLikeC = 0;
 let enCelsius = true;
 
-class Temperatura {
-  constructor(valor) {
-    this.valor = valor;
-  }
-
-  mostrar(enCelsius) {
-    if (enCelsius) return this.valor + '°C';
-
-    return Math.round(this.valor * 9 / 5 + 32) + '°F';
-  }
-}
-
 async function buscar() {
-  const ciudad = document.getElementById('ciudad').value;
+  const ciudad = document.getElementById('ciudad').value.trim();
 
-  // REGLA 1: Evitar condiciones anidadas
-  // REGLA 2: No usar else
-  if (!ciudad.trim()) return alert('Introduce una ciudad');
+  if (!ciudad) return;
+
+  document.getElementById('cargando').style.display = 'block';
+  document.getElementById('tarjeta').style.display = 'none';
+  document.getElementById('error').style.display = 'none';
 
   const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(ciudad)}?unitGroup=metric&key=${API_KEY}&contentType=json`;
 
-  const respuesta = await fetch(url);
-  const datos = await respuesta.json();
+  try {
+    const respuesta = await fetch(url);
 
-  clima = datos.currentConditions;
-  clima.temperatura = new Temperatura(clima.temp);
-  clima.ciudad = ciudad;
-  enCelsius = true;
+    if (!respuesta.ok) {
+      throw new Error(`Error HTTP: ${respuesta.status}`);
+    }
 
-  mostrarClima();
+    const datos = await respuesta.json();
 
-  document.getElementById('toggle').style.display = 'inline';
+    tempC = datos.currentConditions.temp;
+    feelsLikeC = datos.currentConditions.feelslike;
+
+    const humedad = datos.currentConditions.humidity;
+    const viento = datos.currentConditions.windspeed;
+    const condicion = datos.currentConditions.conditions;
+
+    document.getElementById('nombre-ciudad').textContent =
+      datos.resolvedAddress;
+
+    document.getElementById('condicion').textContent =
+      condicion;
+
+    document.getElementById('humedad').textContent =
+      humedad + '%';
+
+    document.getElementById('viento').textContent =
+      viento + ' km/h';
+
+    mostrarTemperatura();
+
+    document.getElementById('tarjeta').style.display = 'block';
+
+  } catch (err) {
+    document.getElementById('error').textContent =
+      'No se pudo obtener el clima: ' + err.message;
+
+    document.getElementById('error').style.display = 'block';
+
+    console.error(err);
+
+  } finally {
+    document.getElementById('cargando').style.display = 'none';
+  }
 }
 
-function mostrarClima() {
-  document.getElementById('resultado').innerHTML = `
-    <b>${clima.ciudad}</b><br>
-    Temperatura: ${clima.temperatura.mostrar(enCelsius)}<br>
-    Condición: ${clima.conditions}<br>
-    Humedad: ${clima.humidity}%<br>
-    Viento: ${clima.windspeed} km/h
-  `;
+function mostrarTemperatura() {
+  const temp = enCelsius
+    ? tempC
+    : (tempC * 9/5) + 32;
+
+  const feels = enCelsius
+    ? feelsLikeC
+    : (feelsLikeC * 9/5) + 32;
+
+  const unidad = enCelsius ? '°C' : '°F';
+
+  document.getElementById('temperatura').textContent =
+    Math.round(temp) + unidad;
+
+  document.getElementById('sensacion').textContent =
+    Math.round(feels) + unidad;
 }
 
 function cambiarUnidad() {
-  if (!clima) return;
-
   enCelsius = !enCelsius;
-  mostrarClima();
+  mostrarTemperatura();
 }
-

@@ -1,3 +1,4 @@
+
 * {
   margin: 0;
   padding: 0;
@@ -12,6 +13,7 @@ body {
   align-items: center;
   min-height: 100vh;
   transition: background 0.6s ease;
+  padding: 20px;
 }
 
 .contenedor {
@@ -20,7 +22,8 @@ body {
   padding: 40px;
   text-align: center;
   width: 360px;
-  box-shadow: 0 4px 20px rgb
+  max-width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 h1 {
@@ -37,6 +40,7 @@ h1 {
 
 input {
   flex: 1;
+  min-width: 0;
   padding: 10px;
   font-size: 15px;
   border: 1px solid #ccc;
