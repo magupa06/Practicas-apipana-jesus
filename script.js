@@ -1,19 +1,13 @@
-
 const API_KEY = 'TU_API_KEY_AQUI';
 
 let clima;
 let enCelsius = true;
 
-// REGLA 3: Encapsular la temperatura en una clase
-// REGLA 7: Clase pequeña
-// REGLA 8: Solo una variable de instancia
 class Temperatura {
   constructor(valor) {
     this.valor = valor;
   }
 
-  // REGLA 2: No usar else
-  // REGLA 9: No usar getters ni setters
   mostrar(enCelsius) {
     if (enCelsius) return this.valor + '°C';
 
@@ -21,7 +15,6 @@ class Temperatura {
   }
 }
 
-// REGLA 6: Usar nombres claros
 async function buscar() {
   const ciudad = document.getElementById('ciudad').value;
 
@@ -44,8 +37,6 @@ async function buscar() {
   document.getElementById('toggle').style.display = 'inline';
 }
 
-// REGLA 5: Evitar cadenas largas de métodos
-// REGLA 9: El objeto Temperatura hace la conversión
 function mostrarClima() {
   document.getElementById('resultado').innerHTML = `
     <b>${clima.ciudad}</b><br>
@@ -56,8 +47,6 @@ function mostrarClima() {
   `;
 }
 
-// REGLA 1: Función sin condiciones anidadas
-// REGLA 2: No utilizar else
 function cambiarUnidad() {
   if (!clima) return;
 
